@@ -9,6 +9,19 @@ Globals:
     Tracing: Active
 
 Resources:
+  RoleCompleteDynamoDbAccess:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AmazonDynamoDBFullAccess
+
   ApiGateway:
     Type: AWS::Serverless::Api
     Properties:
@@ -50,7 +63,7 @@ Resources:
       Environment: # More info about Env Vars: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#environment-object
         Variables:
           JAVA_TOOL_OPTIONS: -XX:+TieredCompilation -XX:TieredStopAtLevel=1
-      Role: arn:aws:iam::975050121867:role/ProductServiceDynamoRole
+      Role: !GetAtt RoleCompleteDynamoDbAccess.Arn
       Events:
         ProductService:
           Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
@@ -58,3 +71,8 @@ Resources:
             RestApiId: !Ref ApiGateway
             Path: /product/{proxy+}
             Method: ANY
+
+Outputs:
+  ApiEndpoint:
+    Description: API Gateway endpoint URL for Stage
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com"
