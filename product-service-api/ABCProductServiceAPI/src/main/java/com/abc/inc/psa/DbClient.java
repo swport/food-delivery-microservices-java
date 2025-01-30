@@ -12,24 +12,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DbClient {
-
     private static final String TABLE_NAME = "ABC_Products";
     private static final String GSI_INDEX_NAME = "ABC_Restaurants";
 
-    private static DynamoDbEnhancedClient dynamoDbEnhancedClient;
-    private static TableSchema<Product> PRODUCT_TABLE_SCHEMA;
+    private final static DynamoDbEnhancedClient dynamoDbEnhancedClient
+            = DynamoDbClientConfig.createDynamoDbEnhancedClient();
+    private final static TableSchema<Product> PRODUCT_TABLE_SCHEMA
+            = TableSchema.fromBean(Product.class);
 
     private static final Logger log = LoggerFactory.getLogger(DbClient.class);
-
-    static {
-        try {
-            dynamoDbEnhancedClient = DynamoDbClientConfig.createDynamoDbEnhancedClient();
-            PRODUCT_TABLE_SCHEMA = TableSchema.fromBean(Product.class);
-        } catch(Exception e) {
-            log.info("DB client failure: ", e);
-        }
-    }
-
 
     public static List<Product> getProductsByRestaurantId(String rest_id) {
         List<Product> result = new ArrayList<>();

@@ -1,8 +1,5 @@
 {
-  "*": {
-    "AWS_REGION": "ap-south-1",
-    "AWS_ACCESS_KEY_ID": "xxxxxxxxxxxxx",
-    "AWS_SECRET_ACCESS_KEY": "xxxxxxxxxxxxxxxxxxxx",
+  "Parameters": {
     "DYNAMO_LOCAL_URL": "http://host.docker.internal:3000"
   }
 }

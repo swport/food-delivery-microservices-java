@@ -13,8 +13,10 @@ public class DynamoDbClientConfig {
     public static DynamoDbEnhancedClient createDynamoDbEnhancedClient() {
         DynamoDbClient ddbClient;
 
+        final String isSamLocal = System.getenv("AWS_SAM_LOCAL");
+
         // when testing locally
-        if (System.getenv("AWS_SAM_LOCAL") != null) {
+        if (isSamLocal != null && !isSamLocal.isBlank()) {
             // Local environment configuration
             ddbClient = DynamoDbClient.builder()
                     .endpointOverride(URI.create(System.getenv("DYNAMO_LOCAL_URL")))

@@ -35,7 +35,7 @@ public class App implements RequestHandler<APIGatewayProxyRequestEvent, APIGatew
             String output;
 
             final String RESTAURANT_ID_QUERY_PARAM = "rest_id";
-            if(queryParams.get(RESTAURANT_ID_QUERY_PARAM) != null) {
+            if(queryParams != null && queryParams.get(RESTAURANT_ID_QUERY_PARAM) != null) {
                 output = objectMapper.writeValueAsString(getAllProductsByRestaurantId(queryParams.get(RESTAURANT_ID_QUERY_PARAM)));
             } else {
                 output = objectMapper.writeValueAsString(getAllRestaurants());
