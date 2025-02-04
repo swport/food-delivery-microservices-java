@@ -18,6 +18,7 @@ import java.util.*;
 
 public class Authorizer implements RequestStreamHandler {
 
+    // TODO: not a good idea to hard code secret
     private static final String HMA_SECRET = "iKFZCbuJViWW4YFx9ZRfE4qNfNBAM65NZ+Eauqr+h/w=";
     private static final String ISSUER_KEY = "AbcIncAuth";
 
@@ -25,9 +26,6 @@ public class Authorizer implements RequestStreamHandler {
     private final static ObjectMapper MAPPER = new ObjectMapper();
 
     public void handleRequest(InputStream input, OutputStream output, Context context) {
-        // Using a RequestSteamHandler here because there doesn't seem to be a way to get
-        // a hold of the internal Jackson ObjectMapper from AWS to adjust it to deal with
-        // the uppercase property names in the Policy document
         TokenAuthorizerRequest event = fromJson(input, TokenAuthorizerRequest.class);
         if (null == event) {
             throw new RuntimeException("Can't deserialize input");
@@ -51,17 +49,13 @@ public class Authorizer implements RequestStreamHandler {
                     .build();
         } else {
             LOGGER.info("JWT verified. Returning Authorized.");
-            String tenantId = getTenantId(token);
-
-            // Pass the tenant id back to API Gateway so we can map it to a custom
-            // HTTP header value -- will be available as context.authorizer.TenantId
-            // in the Integration Request configuration of the API method
             Map<String, String> extraContext = new HashMap<>();
-            extraContext.put("TenantId", "HelloWorld");
+            extraContext.put("user_id", getUserId(token));
+            extraContext.put("user_name", getUserName(token));
+            extraContext.put("user_email", getUserEmail(token));
+            extraContext.put("user_role", getUserRole(token));
+            extraContext.put("restaurant_ids", getRestaurantIds(token));
 
-            // This authorizer is shared across our API, so we are just going to
-            // grant access to all REST Resources of all HTTP methods defined for
-            // this API for this Stage in this Region for this Account
             response = AuthorizerResponse.builder()
                     .principalId(event.getAccountId())
                     .policyDocument(PolicyDocument.builder()
@@ -105,8 +99,21 @@ public class Authorizer implements RequestStreamHandler {
         return issuer.substring(issuer.lastIndexOf("/") + 1);
     }
 
-    protected String getTenantId(DecodedJWT token) {
-        return token.getClaim("custom:tenant_id").asString();
+    protected String getUserId(DecodedJWT token) {
+        return token.getClaim("user_id").asString();
+    }
+    protected String getUserName(DecodedJWT token) {
+        return token.getClaim("user_name").asString();
+    }
+    protected String getUserEmail(DecodedJWT token) {
+        return token.getClaim("user_email").asString();
+    }
+    protected String getUserRole(DecodedJWT token) {
+        return token.getClaim("user_role").asString();
+    }
+
+    protected String getRestaurantIds(DecodedJWT token) {
+        return token.getClaim("restaurant_ids").asString();
     }
 
     protected String apiGatewayResource(TokenAuthorizerRequest event) {

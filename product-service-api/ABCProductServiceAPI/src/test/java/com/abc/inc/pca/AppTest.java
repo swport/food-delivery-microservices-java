@@ -1,4 +1,4 @@
-package com.abc.inc.psa;
+package com.abc.inc.pca;
 
 import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyResponseEvent;
 import static org.junit.Assert.assertEquals;

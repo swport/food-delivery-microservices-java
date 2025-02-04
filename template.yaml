@@ -8,6 +8,18 @@ Globals:
     MemorySize: 512
     Tracing: Active
 
+Parameters:
+  DbUrl:
+    Type: String
+    Description: JDBC URL for the RDS database
+  DbUser:
+    Type: String
+    Description: Username for the RDS database
+  DbPassword:
+    Type: String
+    Description: Password for the RDS database
+    NoEcho: true
+
 Resources:
   RoleCompleteDynamoDbAccess:
     Type: AWS::IAM::Role
@@ -64,7 +76,6 @@ Resources:
         Variables:
           JAVA_TOOL_OPTIONS: -XX:+TieredCompilation -XX:TieredStopAtLevel=1
           DYNAMO_LOCAL_URL: ""
-
       Role: !GetAtt RoleCompleteDynamoDbAccess.Arn
       Events:
         ProductService:
@@ -73,6 +84,28 @@ Resources:
             RestApiId: !Ref ApiGateway
             Path: /restaurants
             Method: GET
+
+  ProductCrudApiFunction:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      CodeUri: ./product-crud-api/ABCProductCrudAPI
+      Handler: com.abc.inc.pca.App::handleRequest
+      Runtime: java21
+      Architectures:
+        - x86_64
+      MemorySize: 512
+      Environment: # More info about Env Vars: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#environment-object
+        Variables:
+          JAVA_TOOL_OPTIONS: -XX:+TieredCompilation -XX:TieredStopAtLevel=1
+          DYNAMO_LOCAL_URL: ""
+      Role: !GetAtt RoleCompleteDynamoDbAccess.Arn
+      Events:
+        ProductService:
+          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+          Properties:
+            RestApiId: !Ref ApiGateway
+            Path: /restaurants/crud/{proxy+}
+            Method: ANY
 
 Outputs:
   ApiEndpoint:
