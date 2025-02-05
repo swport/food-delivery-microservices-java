@@ -44,6 +44,8 @@ public class ProductRepository {
             product.setRestaurantId(rest_id);
             product.setRestaurant_name(productRequest.restaurant_name().orElse(""));
             product.setRestaurant_location(productRequest.restaurant_location().orElse(""));
+            product.setPrice(productRequest.price());
+            product.setDish_name(productRequest.dish_name());
 
             productTable.putItem(product);
         } catch (DynamoDbException e) {

@@ -69,23 +69,23 @@ public class App implements RequestHandler<APIGatewayProxyRequestEvent, APIGatew
             String queryRestId = (String)postBody.get("restaurant_id");
 
             List<String> user_restaurant_ids = Arrays.asList(restaurant_ids.split(","));
-            if(user_restaurant_ids.contains(queryRestId)) {
+            if(!user_restaurant_ids.contains(queryRestId)) {
                 throw new RuntimeException("Invalid request2");
             }
 
             String errors = null;
             if(path != null) {
                 switch (path) {
-                    case "/product-crud/create-product":
+                    case "/restaurants/crud/create-product":
                         errors = addProduct(queryRestId, postBody);
                         break;
-                    case "/product-crud/update-product":
+                    case "/restaurants/crud/update-product":
                         errors = updateProduct(queryRestId, postBody);
                         break;
-                    case "/product-crud/remove-product":
+                    case "/restaurants/crud/remove-product":
                         errors = removeProduct(queryRestId, postBody);
                         break;
-                    case "/product-crud/restaurant-update":
+                    case "/restaurants/crud/restaurant-update":
                         errors = updateRestaurant(queryRestId, user_id, postBody);
                         break;
                 }
@@ -102,8 +102,10 @@ public class App implements RequestHandler<APIGatewayProxyRequestEvent, APIGatew
                     .withBody(output);
         } catch (JsonProcessingException e) {
             output = "Internal server error1";
+            System.out.println(e);
             log.error("Json processing error: ", e);
         } catch (RuntimeException e) {
+            System.out.println(e);
             output = "Internal server error2";
             log.error("Runtime exception: ", e);
         }
@@ -196,7 +198,8 @@ public class App implements RequestHandler<APIGatewayProxyRequestEvent, APIGatew
                     Integer.valueOf(rest_id),
                     restaurant_name, restaurant_location
             );
-            RestaurantRepository.updateRestaurantProfile(restaurantProfile, Integer.valueOf(user_id));
+            boolean ok = RestaurantRepository.updateRestaurantProfile(restaurantProfile, Integer.valueOf(user_id));
+            if(!ok) errors = "Error occurred while saving info.";
         } catch (Exception e) {
             errors = "Internal server error";
             log.error("Product update controller failure: ", e);

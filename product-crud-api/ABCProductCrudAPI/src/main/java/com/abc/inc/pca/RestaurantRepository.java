@@ -21,18 +21,19 @@ public class RestaurantRepository {
         try {
             connection = mysqlClient.getConnection();
 
-            String query = "UPDATE restaurants SET name = ?, location = ? WHERE id = ? AND user_id = ?";
+            String query = "UPDATE restaurants SET restaurant_name = ?, location = ? WHERE id = ? AND user_id = ?";
             try (PreparedStatement statement = connection.prepareStatement(query)) {
                 statement.setString(1, restaurantProfile.name());
                 statement.setString(2, restaurantProfile.location());
                 statement.setInt(3, restaurantProfile.id());
                 statement.setInt(4, user_id);
 
-                statement.executeQuery();
+                statement.executeUpdate();
 
                 ProductRepository.updateRestaurantInfo(restaurantProfile);
             }
         } catch (SQLException e) {
+            System.err.println("Database error: "+ e);
             log.error("Database error: ", e);
             ok = false;
         } finally {

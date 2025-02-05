@@ -2,6 +2,8 @@ package com.abc.inc.auth;
 
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestStreamHandler;
+import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyRequestEvent;
+import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyResponseEvent;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
@@ -17,10 +19,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 public class Authorizer implements RequestStreamHandler {
-
-    // TODO: not a good idea to hard code secret
-    private static final String HMA_SECRET = "iKFZCbuJViWW4YFx9ZRfE4qNfNBAM65NZ+Eauqr+h/w=";
-    private static final String ISSUER_KEY = "AbcIncAuth";
 
     private final static Logger LOGGER = LoggerFactory.getLogger(Authorizer.class);
     private final static ObjectMapper MAPPER = new ObjectMapper();
@@ -81,9 +79,9 @@ public class Authorizer implements RequestStreamHandler {
 
     protected DecodedJWT verifyToken(TokenAuthorizerRequest request) {
         String userPoolId = getTokenIssuer(request.tokenPayload());
-        Algorithm algorithm = Algorithm.HMAC256(HMA_SECRET);
+        Algorithm algorithm = Algorithm.HMAC256(Constants.HMA_SECRET);
         JWTVerifier verifier = JWT.require(algorithm)
-                .withIssuer(ISSUER_KEY)
+                .withIssuer(Constants.ISSUER_KEY)
                 .build();
         DecodedJWT token = null;
         try {

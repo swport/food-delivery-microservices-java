@@ -98,12 +98,16 @@ Resources:
         Variables:
           JAVA_TOOL_OPTIONS: -XX:+TieredCompilation -XX:TieredStopAtLevel=1
           DYNAMO_LOCAL_URL: ""
+          RDB_HOST: ""
+          RDB_PORT: ""
+          RDB_USERNAME: ""
+          RDB_PASSWORD: ""
       Role: !GetAtt RoleCompleteDynamoDbAccess.Arn
       Events:
         ProductService:
           Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
           Properties:
-            RestApiId: !Ref ApiGateway
+            RestApiId: !Ref ProtectedApiGateway
             Path: /restaurants/crud/{proxy+}
             Method: ANY
 
