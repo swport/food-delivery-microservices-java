@@ -36,7 +36,6 @@ public class App implements RequestHandler<APIGatewayProxyRequestEvent, APIGatew
         } catch(Exception e) {
             log.error("Static initialization failure: ", e);
         }
-
     }
 
     public APIGatewayProxyResponseEvent handleRequest(final APIGatewayProxyRequestEvent input, final Context context) {
