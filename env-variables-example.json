@@ -1,5 +1,9 @@
 {
   "Parameters": {
-    "DYNAMO_LOCAL_URL": "http://host.docker.internal:3000"
+    "DYNAMO_LOCAL_URL": "http://host.docker.internal:3000",
+    "RDB_HOST": "abc-food.xxxxxxxxxx.ap-south-1.rds.amazonaws.com",
+    "RDB_PORT": "3306",
+    "RDB_USERNAME": "",
+    "RDB_PASSWORD": ""
   }
 }

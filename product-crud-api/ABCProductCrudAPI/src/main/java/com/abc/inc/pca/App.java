@@ -39,9 +39,6 @@ public class App implements RequestHandler<APIGatewayProxyRequestEvent, APIGatew
     }
 
     public APIGatewayProxyResponseEvent handleRequest(final APIGatewayProxyRequestEvent input, final Context context) {
-
-        final Map<String, String> queryParams = input.getQueryStringParameters();
-
         String output = "";
         final String requestBody = input.getBody();
         final String path = input.getPath();
@@ -68,8 +65,11 @@ public class App implements RequestHandler<APIGatewayProxyRequestEvent, APIGatew
             String queryRestId = (String)postBody.get("restaurant_id");
 
             List<String> user_restaurant_ids = Arrays.asList(restaurant_ids.split(","));
+            System.out.println("user_restaurant_ids: "+restaurant_ids+" : "+user_restaurant_ids);
             if(!user_restaurant_ids.contains(queryRestId)) {
-                throw new RuntimeException("Invalid request2");
+                return response
+                        .withBody("Invalid request")
+                        .withStatusCode(400);
             }
 
             String errors = null;

@@ -66,8 +66,8 @@ Resources:
   LoginFunction:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: ./auth-app/ABCAuth
-      Handler: com.abc.inc.auth.LoginController::handleRequest
+      CodeUri: ./login-service/ABCLoginService
+      Handler: com.abc.inc.login.App::handleRequest
       Runtime: java21
       Architectures:
         - x86_64
@@ -75,12 +75,10 @@ Resources:
       Environment: # More info about Env Vars: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#environment-object
         Variables:
           JAVA_TOOL_OPTIONS: -XX:+TieredCompilation -XX:TieredStopAtLevel=1
-          DYNAMO_LOCAL_URL: ""
           RDB_HOST: ""
           RDB_PORT: ""
           RDB_USERNAME: ""
           RDB_PASSWORD: ""
-      Role: !GetAtt RoleCompleteDynamoDbAccess.Arn
       Events:
         ProductService:
           Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api

@@ -1,4 +1,4 @@
-package com.abc.inc.auth;
+package com.abc.inc.login;
 
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
@@ -18,15 +18,13 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-public class LoginController implements RequestHandler<APIGatewayProxyRequestEvent, APIGatewayProxyResponseEvent> {
+public class App implements RequestHandler<APIGatewayProxyRequestEvent, APIGatewayProxyResponseEvent> {
 
     private static final Map<String, String> tempUserInfo = new HashMap<>();
-    private static final Logger log = LoggerFactory.getLogger(LoginController.class);
+    private static final Logger log = LoggerFactory.getLogger(App.class);
 
     private static APIGatewayProxyResponseEvent response;
     private static ObjectMapper objectMapper;
@@ -50,7 +48,6 @@ public class LoginController implements RequestHandler<APIGatewayProxyRequestEve
 
         String output = "";
         final String requestBody = input.getBody();
-        final String path = input.getPath();
 
         try {
 
@@ -69,6 +66,10 @@ public class LoginController implements RequestHandler<APIGatewayProxyRequestEve
 
             if(checkCredentialsAndSetUser(email, password)) {
                 output = generateToken();
+            } else {
+                return response
+                        .withStatusCode(400)
+                        .withBody("Invalid credentials");
             }
 
             return response
@@ -90,7 +91,6 @@ public class LoginController implements RequestHandler<APIGatewayProxyRequestEve
     }
 
     private static boolean checkCredentialsAndSetUser(String email, String password) {
-        boolean ok = false;
         Connection connection = null;
         ResultSet resultSet = null;
         PreparedStatement statement = null;
@@ -117,7 +117,7 @@ public class LoginController implements RequestHandler<APIGatewayProxyRequestEve
                     tempUserInfo.put("user_name", resultSet.getString(2));
                     tempUserInfo.put("user_email", resultSet.getString(3));
                     tempUserInfo.put("user_role", resultSet.getString(4));
-                    tempUserInfo.put("restaurant_ids", resultSet.getString(5));
+                    tempUserInfo.put("restaurant_ids", resultSet.getString(6));
                     return true;
                 }
             }
@@ -147,7 +147,7 @@ public class LoginController implements RequestHandler<APIGatewayProxyRequestEve
                 }
             }
         }
-        return ok;
+        return false;
     }
 
     private static String generateToken() {
