@@ -37,3 +37,5 @@ build/
 
 ### env variables for local testing
 env-variables.json
+
+deployment.txt
