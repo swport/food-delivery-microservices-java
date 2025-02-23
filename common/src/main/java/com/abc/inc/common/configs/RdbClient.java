@@ -1,4 +1,4 @@
-package com.abc.inc.login;
+package com.abc.inc.common.configs;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;

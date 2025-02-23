@@ -1,18 +1,17 @@
 package com.abc.inc.pca;
 
-import com.abc.inc.pca.config.RdbClient;
+import com.abc.inc.common.configs.RdbClient;
 import com.abc.inc.pca.dto.RestaurantProfile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class RestaurantRepository {
+public class RestaurantService {
     private static final RdbClient mysqlClient = new RdbClient();
-    private static final Logger log = LoggerFactory.getLogger(RestaurantRepository.class);
+    private static final Logger log = LoggerFactory.getLogger(RestaurantService.class);
 
     public static boolean updateRestaurantProfile(RestaurantProfile restaurantProfile, Integer user_id) {
         Connection connection = null;
@@ -30,7 +29,7 @@ public class RestaurantRepository {
 
                 statement.executeUpdate();
 
-                ProductRepository.updateRestaurantInfo(restaurantProfile);
+                ProductService.updateRestaurantInfo(restaurantProfile);
             }
         } catch (SQLException e) {
             System.err.println("Database error: "+ e);

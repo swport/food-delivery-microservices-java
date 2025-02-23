@@ -7,9 +7,9 @@
     <relativePath>../../pom.xml</relativePath>
   </parent>
   <modelVersion>4.0.0</modelVersion>
-  <groupId>com.abc.inc.psa</groupId>
-  <artifactId>ABCProductServiceAPI</artifactId>
-  <name>ABC Product Service API</name>
+  <groupId>com.abc.inc.cart</groupId>
+  <artifactId>ABCCartService</artifactId>
+  <name>Cart Service</name>
   <version>1.0</version>
   <build>
     <plugins>

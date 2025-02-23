@@ -1,7 +1,7 @@
 package com.abc.inc.cart.service;
 
-import com.abc.inc.cart.config.DynamoDbClientConfig;
-import com.abc.inc.cart.model.Cart;
+import com.abc.inc.common.configs.DynamoDbClientConfig;
+import com.abc.inc.common.models.Cart;
 import software.amazon.awssdk.enhanced.dynamodb.DynamoDbEnhancedClient;
 import software.amazon.awssdk.enhanced.dynamodb.DynamoDbTable;
 import software.amazon.awssdk.enhanced.dynamodb.Key;

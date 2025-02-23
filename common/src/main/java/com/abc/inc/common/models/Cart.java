@@ -1,4 +1,4 @@
-package com.abc.inc.cart.model;
+package com.abc.inc.common.models;
 
 import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.*;
 

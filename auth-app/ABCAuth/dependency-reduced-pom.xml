@@ -7,9 +7,9 @@
     <relativePath>../../pom.xml</relativePath>
   </parent>
   <modelVersion>4.0.0</modelVersion>
-  <groupId>com.abc.inc.psa</groupId>
-  <artifactId>ABCProductServiceAPI</artifactId>
-  <name>ABC Product Service API</name>
+  <groupId>abcauth</groupId>
+  <artifactId>ABCAuth</artifactId>
+  <name>ABC Auth</name>
   <version>1.0</version>
   <build>
     <plugins>
@@ -50,7 +50,6 @@
   </dependencies>
   <properties>
     <maven.compiler.target>21</maven.compiler.target>
-    <aws.java.sdk.version>2.29.34</aws.java.sdk.version>
     <maven.compiler.source>21</maven.compiler.source>
   </properties>
 </project>

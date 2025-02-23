@@ -135,7 +135,7 @@ public class App implements RequestHandler<APIGatewayProxyRequestEvent, APIGatew
                     restaurant_name, restaurant_location
             );
 
-            ProductRepository.addNewProduct(rest_id, product);
+            ProductService.addNewProduct(rest_id, product);
         } catch (Exception e) {
             errors = "Internal server error";
             log.error("Product add controller failure: ", e);
@@ -157,7 +157,7 @@ public class App implements RequestHandler<APIGatewayProxyRequestEvent, APIGatew
 
         try {
             ProductRequest product = new ProductRequest(dish_name, new BigDecimal(price));
-            ProductRepository.updateProductDetail(rest_id, product_id, product);
+            ProductService.updateProductDetail(rest_id, product_id, product);
         } catch (Exception e) {
             errors = "Internal server error";
             log.error("Product update controller failure: ", e);
@@ -174,7 +174,7 @@ public class App implements RequestHandler<APIGatewayProxyRequestEvent, APIGatew
         }
 
         try {
-            ProductRepository.deleteProduct(rest_id, product_id);
+            ProductService.deleteProduct(rest_id, product_id);
         } catch (Exception e) {
             errors = "Internal server error";
             log.error("Product update controller failure: ", e);
@@ -197,7 +197,7 @@ public class App implements RequestHandler<APIGatewayProxyRequestEvent, APIGatew
                     Integer.valueOf(rest_id),
                     restaurant_name, restaurant_location
             );
-            boolean ok = RestaurantRepository.updateRestaurantProfile(restaurantProfile, Integer.valueOf(user_id));
+            boolean ok = RestaurantService.updateRestaurantProfile(restaurantProfile, Integer.valueOf(user_id));
             if(!ok) errors = "Error occurred while saving info.";
         } catch (Exception e) {
             errors = "Internal server error";

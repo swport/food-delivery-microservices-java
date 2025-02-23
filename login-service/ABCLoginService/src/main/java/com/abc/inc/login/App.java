@@ -1,5 +1,7 @@
 package com.abc.inc.login;
 
+import com.abc.inc.common.Constants;
+import com.abc.inc.common.configs.RdbClient;
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
 import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyRequestEvent;
@@ -95,8 +97,7 @@ public class App implements RequestHandler<APIGatewayProxyRequestEvent, APIGatew
         ResultSet resultSet = null;
         PreparedStatement statement = null;
         try {
-            final String passwordHash = BCrypt.hashpw(password, BCrypt.gensalt(12));
-            System.out.println("passwordHash: "+passwordHash);
+//            final String passwordHash = BCrypt.hashpw(password, BCrypt.gensalt(12));
 
             RdbClient mysqlClient = new RdbClient();
             connection = mysqlClient.getConnection();

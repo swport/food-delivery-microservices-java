@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.abc.inc.common.Utils;
 import com.abc.inc.psa.dto.ProductResponse;
 import com.abc.inc.psa.dto.RestaurantResponse;
 import com.amazonaws.services.lambda.runtime.Context;
@@ -46,7 +47,7 @@ public class App implements RequestHandler<APIGatewayProxyRequestEvent, APIGatew
                     .withBody(output);
         } catch (Exception e) {
             log.error("Error: ", e);
-            System.out.println("Error: "+Util.getFullStackTrace(e));
+            System.out.println("Error: "+ Utils.getFullStackTrace(e));
             return response
                     .withBody("{}")
                     .withStatusCode(500);

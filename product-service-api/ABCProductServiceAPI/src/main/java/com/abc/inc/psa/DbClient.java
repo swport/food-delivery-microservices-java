@@ -1,7 +1,7 @@
 package com.abc.inc.psa;
 
-import com.abc.inc.psa.config.DynamoDbClientConfig;
-import com.abc.inc.psa.model.Product;
+import com.abc.inc.common.configs.DynamoDbClientConfig;
+import com.abc.inc.common.models.Product;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import software.amazon.awssdk.core.pagination.sync.SdkIterable;

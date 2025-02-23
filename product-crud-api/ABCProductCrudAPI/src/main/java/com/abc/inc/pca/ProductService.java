@@ -1,9 +1,9 @@
 package com.abc.inc.pca;
 
-import com.abc.inc.pca.config.DynamoDbClientConfig;
+import com.abc.inc.common.configs.DynamoDbClientConfig;
+import com.abc.inc.common.models.Product;
 import com.abc.inc.pca.dto.ProductRequest;
 import com.abc.inc.pca.dto.RestaurantProfile;
-import com.abc.inc.pca.model.Product;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import software.amazon.awssdk.enhanced.dynamodb.*;
@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class ProductRepository {
+public class ProductService {
     private static final String TABLE_NAME = "ABC_Products";
 
     private final static DynamoDbEnhancedClient dynamoDbEnhancedClient
@@ -22,7 +22,7 @@ public class ProductRepository {
     private final static TableSchema<Product> PRODUCT_TABLE_SCHEMA
             = TableSchema.fromBean(Product.class);
 
-    private static final Logger log = LoggerFactory.getLogger(ProductRepository.class);
+    private static final Logger log = LoggerFactory.getLogger(ProductService.class);
 
     public static boolean addNewProduct(String rest_id, ProductRequest productRequest) {
         final DynamoDbTable<Product> productTable = dynamoDbEnhancedClient.table(TABLE_NAME, PRODUCT_TABLE_SCHEMA);

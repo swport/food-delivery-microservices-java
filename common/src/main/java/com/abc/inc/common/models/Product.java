@@ -1,4 +1,4 @@
-package com.abc.inc.pca.model;
+package com.abc.inc.common.models;
 
 import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.*;
 
@@ -37,8 +37,12 @@ public class Product {
         return product_id;
     }
 
-    public void setLatest(String str) {
-        latest = str;
+    public void setLatest() {
+        setLatest("1");
+    }
+
+    public void setLatest(String lt) {
+        latest = lt;
     }
 
     @DynamoDbSecondaryPartitionKey(indexNames = {RESTAURANT_INDEX})

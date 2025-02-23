@@ -1,4 +1,4 @@
-package com.abc.inc.psa.config;
+package com.abc.inc.common.configs;
 
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
 import software.amazon.awssdk.auth.credentials.AwsCredentialsProvider;
