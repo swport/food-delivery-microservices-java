@@ -1,0 +1,9 @@
+version = 0.1
+
+[default]
+[default.deploy]
+[default.deploy.parameters]
+stack_name = "deliveryapp"
+region = "ap-south-1"
+s3_bucket = "deliveryapp2"
+capabilities = "CAPABILITY_IAM"

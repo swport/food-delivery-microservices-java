@@ -12,6 +12,6 @@
         <module>login-service/ABCLoginService</module>
         <module>product-crud-api/ABCProductCrudAPI</module>
         <module>product-service-api/ABCProductServiceAPI</module>
-        <module>auth-app/ABCAuth</module>
+        <module>authorizer/ABCAuth</module>
     </modules>
 </project>

@@ -41,9 +41,7 @@ public class App implements RequestHandler<APIGatewayProxyRequestEvent, APIGatew
             }
 
             if("GET".equalsIgnoreCase(httpMethod)) {
-                System.out.println("came here");
                 List<Cart> all = getAll(auth_user_id);
-                System.out.println("Data: " + all);
                 String output = objectMapper.writeValueAsString(all);
 
                 return response
@@ -58,8 +56,6 @@ public class App implements RequestHandler<APIGatewayProxyRequestEvent, APIGatew
             }
 
             final Map<String, Object> postBody = objectMapper.readValue(requestBody, new TypeReference<>() {});
-
-            System.out.println("came here2");
 
             String errors = null;
 

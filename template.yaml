@@ -9,15 +9,14 @@ Globals:
     Tracing: Active
 
 Parameters:
-  DbUrl:
+  RDBHOST:
     Type: String
-    Description: JDBC URL for the RDS database
-  DbUser:
+  RDBPORT:
     Type: String
-    Description: Username for the RDS database
-  DbPassword:
+  RDBUSERNAME:
     Type: String
-    Description: Password for the RDS database
+  RDBPASSWORD:
+    Type: String
     NoEcho: true
 
 Resources:
@@ -32,12 +31,16 @@ Resources:
               Service: lambda.amazonaws.com
             Action: sts:AssumeRole
       ManagedPolicyArns:
-        - arn:aws:iam::aws:policy/service-role/AmazonDynamoDBFullAccess
+        - arn:aws:iam::aws:policy/AmazonDynamoDBFullAccess
 
   ApiGateway:
     Type: AWS::Serverless::Api
     Properties:
       StageName: Staging
+      MethodSettings:
+        - LoggingLevel: INFO
+          ResourcePath: '/*'
+          HttpMethod: '*'
 
   ProtectedApiGateway:
     Type: AWS::Serverless::Api
@@ -49,11 +52,15 @@ Resources:
           MyLambdaTokenAuthorizer:
             FunctionPayloadType: TOKEN
             FunctionArn: !GetAtt AuthorizerFunction.Arn
+      MethodSettings:
+        - LoggingLevel: INFO
+          ResourcePath: '/*'
+          HttpMethod: '*'
 
   AuthorizerFunction:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: ./auth-app/ABCAuth
+      CodeUri: ./authorizer/ABCAuth
       Handler: com.abc.inc.auth.Authorizer::handleRequest
       Runtime: java21
       Architectures:
@@ -75,10 +82,10 @@ Resources:
       Environment: # More info about Env Vars: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#environment-object
         Variables:
           JAVA_TOOL_OPTIONS: -XX:+TieredCompilation -XX:TieredStopAtLevel=1
-          RDB_HOST: ""
-          RDB_PORT: ""
-          RDB_USERNAME: ""
-          RDB_PASSWORD: ""
+          RDB_HOST: !Ref RDBHOST
+          RDB_PORT: !Ref RDBPORT
+          RDB_USERNAME: !Ref RDBUSERNAME
+          RDB_PASSWORD: !Ref RDBPASSWORD
       Events:
         ProductService:
           Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
@@ -122,10 +129,10 @@ Resources:
         Variables:
           JAVA_TOOL_OPTIONS: -XX:+TieredCompilation -XX:TieredStopAtLevel=1
           DYNAMO_LOCAL_URL: ""
-          RDB_HOST: ""
-          RDB_PORT: ""
-          RDB_USERNAME: ""
-          RDB_PASSWORD: ""
+          RDB_HOST: !Ref RDBHOST
+          RDB_PORT: !Ref RDBPORT
+          RDB_USERNAME: !Ref RDBUSERNAME
+          RDB_PASSWORD: !Ref RDBPASSWORD
       Role: !GetAtt RoleCompleteDynamoDbAccess.Arn
       Events:
         ProductService:
@@ -157,6 +164,38 @@ Resources:
             Path: /cart/{proxy+}
             Method: ANY
 
+  OrderPersistentFunction:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      CodeUri: ./order-persistent-service/OrderPersistentService
+      Handler: com.abc.inc.orderpersistent.App::handleRequest
+      Runtime: java21
+      Architectures:
+        - x86_64
+      MemorySize: 512
+      Policies:
+        - SQSPollerPolicy:
+            QueueName: !GetAtt NewOrderQueue.Arn
+      Environment: # More info about Env Vars: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#environment-object
+        Variables:
+          JAVA_TOOL_OPTIONS: -XX:+TieredCompilation -XX:TieredStopAtLevel=1
+          RDB_HOST: !Ref RDBHOST
+          RDB_PORT: !Ref RDBPORT
+          RDB_USERNAME: !Ref RDBUSERNAME
+          RDB_PASSWORD: !Ref RDBPASSWORD
+      Events:
+        OrderQueueEvent:
+          Type: SQS # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+          Properties:
+            Queue: !GetAtt NewOrderQueue.Arn
+            BatchSize: 10
+            Enabled: true
+
+  NewOrderQueue:
+    Type: AWS::SQS::Queue
+    Properties:
+      QueueName: NewOrderQueue
+
   OrderPlacementFunction:
     Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
     Properties:
@@ -170,6 +209,10 @@ Resources:
         Variables:
           JAVA_TOOL_OPTIONS: -XX:+TieredCompilation -XX:TieredStopAtLevel=1
           DYNAMO_LOCAL_URL: ""
+          SQS_QUEUE_URL: !Ref NewOrderQueue
+      Policies:
+        - SQSSendMessagePolicy:
+            QueueName: !GetAtt NewOrderQueue.Arn
       Role: !GetAtt RoleCompleteDynamoDbAccess.Arn
       Events:
         OrderPlacementService:
@@ -178,8 +221,3 @@ Resources:
             RestApiId: !Ref ProtectedApiGateway
             Path: /order-placement/{proxy+}
             Method: ANY
-
-Outputs:
-  ApiEndpoint:
-    Description: API Gateway endpoint URL for Stage
-    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com"
