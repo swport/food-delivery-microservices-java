@@ -8,7 +8,7 @@
         <relativePath>../../pom.xml</relativePath>
     </parent>
     <groupId>com.abc.inc.pca</groupId>
-    <artifactId>ABCProductCrudAPI</artifactId>
+    <artifactId>ABCInventoryMgtService</artifactId>
     <version>1.0</version>
     <packaging>jar</packaging>
     <name>A sample Hello World created for SAM CLI.</name>

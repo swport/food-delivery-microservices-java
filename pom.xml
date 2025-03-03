@@ -10,7 +10,7 @@
         <module>cart-service/ABCCartService</module>
         <module>order-placement-service/OrderPlacementService</module>
         <module>login-service/ABCLoginService</module>
-        <module>product-crud-api/ABCProductCrudAPI</module>
+        <module>inventory-manage-service/ABCInventoryMgtService</module>
         <module>product-service-api/ABCProductServiceAPI</module>
         <module>authorizer/ABCAuth</module>
     </modules>
